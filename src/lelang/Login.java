@@ -8,6 +8,8 @@ package lelang;
 import java.sql.*;
 import java.util.*;
 import javax.swing.*;
+import lelang.menu.*;
+
 /**
  *
  * @author Fikri Khairul Shaleh
@@ -130,7 +132,8 @@ public class Login extends javax.swing.JFrame {
                      a.setName(rs.getString("nama_petugas"));
                      list.add(a);
                      
-                     JOptionPane.showMessageDialog(null, "Login Sebagai Admin");
+                     new Admin().show();
+                     this.dispose();
                  }else{
                      list = new ArrayList<UserSession>();
                      a = new UserSession();
@@ -140,7 +143,8 @@ public class Login extends javax.swing.JFrame {
                      a.setName(rs.getString("nama_petugas"));
                      list.add(a);
                      
-                     JOptionPane.showMessageDialog(null, "Login Sebagai Petugas");
+                     new Petugas().show();
+                     this.dispose(); 
                  }
                  }else{
                      JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
@@ -159,7 +163,8 @@ public class Login extends javax.swing.JFrame {
                          a.setName(rs.getString("nama_lengkap"));
                          list.add(a);
                          
-                         JOptionPane.showMessageDialog(null, "Login Sebagai Masyarakat");
+                         new User().show();
+                         this.dispose(); 
                         }else{
                      JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
                     }
