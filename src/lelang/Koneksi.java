@@ -10,18 +10,20 @@ import javax.swing.*;
 
 /**
  *
- * @author ERPEEL
+ * @author Fikri Khairul Shaleh
  */
 public class Koneksi {
     public Connection con;
     public Statement stat;
     
-    private String db = "DB", user = "root", pass = "";
+    private static final String DATABASE_NAME = "lelang";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "";
    
     public Koneksi(){
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/"+db,user,pass);
+            con = DriverManager.getConnection("jdbc:mysql://localhost/"+DATABASE_NAME,USERNAME,PASSWORD);
             stat = con.createStatement();
             System.out.println("Sukses");
         }catch(Exception e){

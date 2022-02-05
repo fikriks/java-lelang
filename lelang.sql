@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 04, 2022 at 10:24 AM
--- Server version: 10.4.20-MariaDB
--- PHP Version: 8.0.9
+-- Host: localhost:3306
+-- Generation Time: Feb 05, 2022 at 12:15 AM
+-- Server version: 5.7.24
+-- PHP Version: 8.0.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -60,7 +60,7 @@ CREATE TABLE `tb_lelang` (
   `id_barang` int(11) NOT NULL,
   `tgl_lelang` date NOT NULL,
   `harga_akhir` int(20) NOT NULL,
-  `id_user` int(11) NOT NULL,
+  `id_user` int(11) DEFAULT NULL,
   `id_petugas` int(11) NOT NULL,
   `status` enum('dibuka','ditutup') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -103,7 +103,7 @@ CREATE TABLE `tb_masyarakat` (
 --
 
 INSERT INTO `tb_masyarakat` (`id_user`, `nama_lengkap`, `username`, `password`, `telp`) VALUES
-(1, 'Fikrik Khairul Shaleh', 'fikri', '123', '081281271212');
+(1, 'Fikri Khairul Shaleh', 'fikri', '123', '081281271212');
 
 -- --------------------------------------------------------
 
@@ -183,19 +183,19 @@ ALTER TABLE `tb_petugas`
 -- AUTO_INCREMENT for table `tb_barang`
 --
 ALTER TABLE `tb_barang`
-  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tb_history_lelang`
 --
 ALTER TABLE `tb_history_lelang`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tb_lelang`
 --
 ALTER TABLE `tb_lelang`
-  MODIFY `id_lelang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_lelang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_level`
@@ -213,7 +213,7 @@ ALTER TABLE `tb_masyarakat`
 -- AUTO_INCREMENT for table `tb_petugas`
 --
 ALTER TABLE `tb_petugas`
-  MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
