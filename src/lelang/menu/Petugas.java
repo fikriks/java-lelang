@@ -23,6 +23,7 @@ public class Petugas extends javax.swing.JFrame {
     public Petugas() {
         initComponents();
         setLocationRelativeTo(this);
+        this.setTitle("Menu Utama");
     }
 
     /**

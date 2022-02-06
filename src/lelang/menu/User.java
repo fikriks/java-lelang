@@ -22,6 +22,7 @@ public class User extends javax.swing.JFrame {
     public User() {
         initComponents();
         setLocationRelativeTo(this);
+        this.setTitle("Menu Utama");
     }
 
     /**
