@@ -16,7 +16,7 @@ public class Koneksi {
     public Connection con;
     public Statement stat;
     
-    private static final String DATABASE_NAME = "lelang";
+    private static final String DATABASE_NAME = "DB";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
    
