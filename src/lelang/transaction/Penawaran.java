@@ -18,8 +18,8 @@ import lelang.menu.*;
  */
 public class Penawaran extends javax.swing.JFrame {
     private Connection con;
-    private ResultSet rs;
-    private Statement stat;
+    private ResultSet rs, rs2;
+    private Statement stat, stat2;
     private String sql, sql2, sql3, sql4;
     private Koneksi kon = new Koneksi();
     private DefaultTableModel model;
@@ -35,6 +35,7 @@ public class Penawaran extends javax.swing.JFrame {
         
         con = kon.con;
         stat = kon.stat;
+        stat2 = kon.stat;
         setTitle("Penawaran");
         aturTable();
     }
@@ -159,20 +160,23 @@ public class Penawaran extends javax.swing.JFrame {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         JFrame frame = new JFrame();
+        Integer id_barang;
         String result = JOptionPane.showInputDialog(frame, "Masukkan harga penawaran");
 
         if(result != null){
             try{
-                sql = "SELECT id_barang, harga_awal FROM tb_barang WHERE nama_barang='"+ jTable1.getValueAt(jTable1.getSelectedRow(),0) +"'";
+                sql = "SELECT id_barang,harga_awal FROM tb_barang WHERE nama_barang='"+ jTable1.getValueAt(jTable1.getSelectedRow(),0) +"'";
                 rs = stat.executeQuery(sql);
                 if(rs.next()){
-                    if(Integer.parseInt(result) > rs.getInt("harga_awal")){
-                        sql2 = "SELECT harga_akhir FROM tb_lelang WHERE id_barang='"+ rs.getString("id_barang") +"'";
-                        rs = stat.executeQuery(sql2);
-                        if(rs.next()){
-                            if(Integer.parseInt(result) > rs.getInt("harga_akhir")){
-                                sql3 = "INSERT INTO tb_history_lelang VALUES ("+ null +",(SELECT id_lelang FROM tb_lelang WHERE id_barang='"+ rs.getString("id_barang") +"'),'"+ rs.getString("id_barang") +"', '"+ session.getId() +"', '"+ result +"')";
-                                sql4 = "UPDATE tb_lelang SET harga_akhir='"+ result +"', id_user='"+ session.getId() +"' WHERE id_barang='"+ rs.getString("id_barang") +"'";
+                    id_barang = rs.getInt("id_barang");
+                   
+                    if(Integer.parseInt(result) > rs.getInt("harga_awal")){    
+                        sql2 = "SELECT harga_akhir FROM tb_lelang WHERE id_barang='"+ id_barang +"' AND harga_akhir IS NOT NULL";
+                        rs2 = stat2.executeQuery(sql2);
+                        if(rs2.next()){  
+                            if(Integer.parseInt(result) > rs2.getInt("harga_akhir")){
+                                sql3 = "INSERT INTO tb_history_lelang VALUES ("+ null +",(SELECT id_lelang FROM tb_lelang WHERE id_barang='"+ id_barang +"'),'"+ id_barang +"', '"+ session.getId() +"', '"+ result +"')";
+                                sql4 = "UPDATE tb_lelang SET harga_akhir='"+ result +"', id_user='"+ session.getId() +"' WHERE id_barang='"+ id_barang +"'";
 
                                 stat.execute(sql3);
                                 stat.execute(sql4);
@@ -186,7 +190,20 @@ public class Penawaran extends javax.swing.JFrame {
                             } else{
                                 JOptionPane.showMessageDialog(null,"Masukkan nominal lelang lebih dari harga akhir!");
                            }
-                        } 
+                        } else {
+                                sql3 = "INSERT INTO tb_history_lelang VALUES ("+ null +",(SELECT id_lelang FROM tb_lelang WHERE id_barang='"+ id_barang +"'),'"+ id_barang +"', '"+ session.getId() +"', '"+ result +"')";
+                                sql4 = "UPDATE tb_lelang SET harga_akhir='"+ result +"', id_user='"+ session.getId() +"' WHERE id_barang='"+ id_barang +"'";
+
+                                stat.execute(sql3);
+                                stat.execute(sql4);
+
+                                JOptionPane.showMessageDialog(null, "Sukses menambah penawaran");
+
+                                model.fireTableDataChanged();
+                                model.getDataVector().removeAllElements();
+
+                                aturTable();  
+                        }
                     }else{
                          JOptionPane.showMessageDialog(null,"Masukkan nominal lelang lebih dari harga awal!");
                     }

@@ -76,7 +76,7 @@ public class DataLelang extends javax.swing.JFrame {
         jComboBox1.addItem("-- Pilih --");
         
         try{
-           sql = "SELECT * FROM tb_barang,tb_lelang WHERE tb_lelang.id_barang != tb_barang.id_barang";
+            sql = "SELECT * FROM tb_barang LEFT JOIN tb_lelang ON tb_barang.id_barang = tb_lelang.id_barang WHERE id_lelang IS NULL";
             rs = stat.executeQuery(sql);
             while(rs.next()){
                 jComboBox1.addItem(rs.getString("nama_barang"));

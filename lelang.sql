@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 05, 2022 at 12:15 AM
+-- Generation Time: Feb 08, 2022 at 06:03 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.0.13
 
@@ -59,7 +59,7 @@ CREATE TABLE `tb_lelang` (
   `id_lelang` int(11) NOT NULL,
   `id_barang` int(11) NOT NULL,
   `tgl_lelang` date NOT NULL,
-  `harga_akhir` int(20) NOT NULL,
+  `harga_akhir` int(20) DEFAULT NULL,
   `id_user` int(11) DEFAULT NULL,
   `id_petugas` int(11) NOT NULL,
   `status` enum('dibuka','ditutup') NOT NULL
@@ -94,7 +94,7 @@ CREATE TABLE `tb_masyarakat` (
   `id_user` int(11) NOT NULL,
   `nama_lengkap` varchar(25) NOT NULL,
   `username` varchar(25) NOT NULL,
-  `password` varchar(25) NOT NULL,
+  `password` varchar(50) NOT NULL,
   `telp` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -103,7 +103,7 @@ CREATE TABLE `tb_masyarakat` (
 --
 
 INSERT INTO `tb_masyarakat` (`id_user`, `nama_lengkap`, `username`, `password`, `telp`) VALUES
-(1, 'Fikri Khairul Shaleh', 'fikri', '123', '081281271212');
+(1, 'Fikri Khairul Shaleh', 'fikri', 'aa65989e6e147809f34f559958ecf804', '081281271212');
 
 -- --------------------------------------------------------
 
@@ -115,7 +115,7 @@ CREATE TABLE `tb_petugas` (
   `id_petugas` int(11) NOT NULL,
   `nama_petugas` varchar(25) NOT NULL,
   `username` varchar(25) NOT NULL,
-  `password` varchar(25) NOT NULL,
+  `password` varchar(50) NOT NULL,
   `id_level` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -124,8 +124,8 @@ CREATE TABLE `tb_petugas` (
 --
 
 INSERT INTO `tb_petugas` (`id_petugas`, `nama_petugas`, `username`, `password`, `id_level`) VALUES
-(1, 'Fikri Khairul Shaleh', 'admin', '123', 1),
-(2, 'Fikri Khairul Shaleh', 'petugas', '123', 2);
+(1, 'Fikri Khairul Shaleh', 'admin', 'aa65989e6e147809f34f559958ecf804', 1),
+(2, 'Fikri Khairul Shaleh', 'petugas', 'aa65989e6e147809f34f559958ecf804', 2);
 
 --
 -- Indexes for dumped tables
@@ -165,7 +165,8 @@ ALTER TABLE `tb_level`
 -- Indexes for table `tb_masyarakat`
 --
 ALTER TABLE `tb_masyarakat`
-  ADD PRIMARY KEY (`id_user`);
+  ADD PRIMARY KEY (`id_user`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `tb_petugas`
@@ -189,13 +190,13 @@ ALTER TABLE `tb_barang`
 -- AUTO_INCREMENT for table `tb_history_lelang`
 --
 ALTER TABLE `tb_history_lelang`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tb_lelang`
 --
 ALTER TABLE `tb_lelang`
-  MODIFY `id_lelang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_lelang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_level`
@@ -207,13 +208,13 @@ ALTER TABLE `tb_level`
 -- AUTO_INCREMENT for table `tb_masyarakat`
 --
 ALTER TABLE `tb_masyarakat`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_petugas`
 --
 ALTER TABLE `tb_petugas`
-  MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
