@@ -22,6 +22,8 @@ public class DataPetugas extends javax.swing.JFrame {
     private String sql;
     private Koneksi kon = new Koneksi();
     private DefaultTableModel model;
+    private Encrypt enc = new Encrypt();
+    private UserSession session = new UserSession();
     
     /**
      * Creates new form DataPengguna
@@ -298,17 +300,31 @@ public class DataPetugas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ada data yang belum di isi","Informasi",JOptionPane.INFORMATION_MESSAGE);
         }else{
             try{
-                   sql = "INSERT INTO tb_petugas VALUES ("+ null +",'"+ jTextField3.getText() +"','"+ jTextField1.getText() +"','"+ jPasswordField1.getText() +"', '"+ jComboBox1.getSelectedIndex() +"')";
-                   stat.execute(sql);
-                   JOptionPane.showMessageDialog(null, "Sukses tambah data");
+                   Integer level;
+                   String pass;
+                   
+                   level = jComboBox1.getSelectedIndex() == 1 ? 1 : 2;
+                   pass = enc.getMD5EncryptedValue(jPasswordField1.getText());       
+                   
+                   sql = "SELECT * FROM tb_petugas WHERE username='"+ jTextField1.getText() +"'";
+                   rs = stat.executeQuery(sql);
 
-                   model.fireTableDataChanged();
-                   model.getDataVector().removeAllElements();
+                   if(rs.next()){
+                       JOptionPane.showMessageDialog(null, "Username sudah terdaftar","Informasi",JOptionPane.INFORMATION_MESSAGE);
+                   } else {
+                       sql = "INSERT INTO tb_petugas VALUES ("+ null +",'"+ jTextField3.getText() +"','"+ jTextField1.getText() +"','"+ jPasswordField1.getText() +"', '"+ level +"')";
+                       stat.execute(sql);
+                       JOptionPane.showMessageDialog(null, "Sukses tambah data");
 
-                   aturTable();
-                   reset();
-                   sembunyiCRUD();
-                   jLabel7.setVisible(false);
+                       model.fireTableDataChanged();
+                       model.getDataVector().removeAllElements();
+
+                       aturTable();
+                       reset();
+                       dataCB();
+                       sembunyiCRUD();
+                       jLabel7.setVisible(false);
+                   }
                }catch(Exception e){
                    JOptionPane.showMessageDialog(null, e.getMessage());
                }
@@ -321,11 +337,63 @@ public class DataPetugas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ada data yang belum di isi","Informasi",JOptionPane.INFORMATION_MESSAGE);
         }else{
             try{
-                   if(jPasswordField1.getText().isEmpty()){
-                       sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', id_level'"+ jComboBox1.getSelectedIndex() +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                   Integer level;
+                   String pass;
+                   
+                   level = jComboBox1.getSelectedIndex() == 1 ? 1 : 2;
+                   pass = enc.getMD5EncryptedValue(jPasswordField1.getText());
+                   
+                   if(session.getUsername().equals(jTextField1.getText())){
+                        if(jPasswordField1.getText().isEmpty()){
+                            sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', id_level='"+ level +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                        }else{
+                             if(jPasswordField1.getText().length() < 7){
+                                JOptionPane.showMessageDialog(null, "Password minimal terdiri dari 7 huruf");
+                                return;
+                             }else{
+                                 sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', password='"+ pass +"', id_level='"+ level +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                             }
+                        }
+                   }else if(!session.getUsername().equals(jTextField1.getText())){
+                       sql = "SELECT * FROM tb_petugas WHERE username='"+ jTextField1.getText() +"'";
+                       rs = stat.executeQuery(sql);
+                       
+                       if(rs.next()){
+                           JOptionPane.showMessageDialog(null, "Username sudah terdaftar");
+                           return;
+                       } else {
+                           if(jPasswordField1.getText().isEmpty()){
+                               sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', id_level='"+ level +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                           }else{
+                               if(jPasswordField1.getText().length() < 7){
+                                   JOptionPane.showMessageDialog(null, "Password minimal terdiri dari 7 huruf");
+                                   return;
+                               }else{
+                                   sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', password='"+ pass +"', id_level='"+ level +"' username='"+ jTextField1.getText() +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                               }
+                           }
+                       }
                    }else{
-                       sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', password='"+ jPasswordField1.getText() +"', id_level'"+ jComboBox1.getSelectedIndex() +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                       sql = "SELECT * FROM tb_petugas WHERE username='"+ jTextField1.getText() +"'";
+                       rs = stat.executeQuery(sql);
+                       
+                       if(rs.next()){
+                           JOptionPane.showMessageDialog(null, "Username sudah terdaftar");
+                           return;
+                       } else {
+                           if(jPasswordField1.getText().isEmpty()){
+                               sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', id_level='"+ level +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                           }else{
+                               if(jPasswordField1.getText().length() < 7){
+                                   JOptionPane.showMessageDialog(null, "Password minimal terdiri dari 7 huruf");
+                                   return;
+                               }else{
+                                   sql = "UPDATE tb_petugas SET nama_petugas='"+ jTextField3.getText() +"', username='"+ jTextField1.getText() +"', password='"+ pass +"', id_level='"+ level +"' username='"+ jTextField1.getText() +"' WHERE id_petugas='"+ jTextField2.getText() +"'";
+                               }
+                           }
+                       }
                    }
+                   
                    stat.execute(sql);
                    JOptionPane.showMessageDialog(null, "Sukses edit data");
 
@@ -334,6 +402,7 @@ public class DataPetugas extends javax.swing.JFrame {
 
                    aturTable();
                    reset();
+                   dataCB();
                    sembunyiCRUD();
                    jLabel7.setVisible(false);
                }catch(Exception e){
@@ -354,6 +423,7 @@ public class DataPetugas extends javax.swing.JFrame {
 
                    aturTable();
                    reset();
+                   dataCB();
                    sembunyiCRUD();
                    jLabel7.setVisible(false);
                }catch(Exception e){
@@ -370,7 +440,7 @@ public class DataPetugas extends javax.swing.JFrame {
                 jTextField2.setText(rs.getString("id_petugas"));
                 jTextField3.setText(rs.getString("nama_petugas"));
                 jTextField1.setText(rs.getString("username"));
-                jComboBox1.setSelectedIndex(rs.getInt("id_level"));
+                jComboBox1.setSelectedIndex(rs.getInt("id_level") == 1 ? 1 : 2);
                 
                 tampilCRUD();
                 jLabel7.setVisible(true);

@@ -21,6 +21,7 @@ public class Login extends javax.swing.JFrame {
     private Statement stat;
     private Koneksi kon = new Koneksi();
     private UserSession session = new UserSession();
+    private Encrypt enc = new Encrypt();
     private UserSession a;
     private List<UserSession> list;
     
@@ -140,66 +141,69 @@ public class Login extends javax.swing.JFrame {
         if(jTextField1.getText().isEmpty() && jPasswordField1.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Ada data yang belum di isi","Informasi",JOptionPane.INFORMATION_MESSAGE);
         }else{
-        try{
-            sql = "SELECT * FROM tb_petugas INNER JOIN tb_level ON tb_petugas.id_level = tb_level.id_level WHERE username='" + jTextField1.getText() +"'AND password='" + jPasswordField1.getText() +"'";
-            rs = stat.executeQuery(sql);
-            
-             if(rs.next()){
-                 if(jTextField1.getText().equals(rs.getString("username")) && jPasswordField1.getText().equals(rs.getString("password"))){
-                    if(rs.getString("level").equalsIgnoreCase("administrator")){
-                     list = new ArrayList<UserSession>();
-                     a = new UserSession();
-                     a.setId(rs.getInt("id_petugas"));
-                     a.setUsername(rs.getString("username"));
-                     a.setPassword(rs.getString("password"));
-                     a.setName(rs.getString("nama_petugas"));
-                     a.setLevel(rs.getString("level"));
-                     list.add(a);
-                     
-                     new Admin().show();
-                     this.dispose();
-                 }else{
-                     list = new ArrayList<UserSession>();
-                     a = new UserSession();
-                     a.setId(rs.getInt("id_petugas"));
-                     a.setUsername(rs.getString("username"));
-                     a.setPassword(rs.getString("password"));
-                     a.setName(rs.getString("nama_petugas"));
-                     a.setLevel(rs.getString("level"));
-                     list.add(a);
-                     
-                     new Petugas().show();
-                     this.dispose(); 
-                 }
-                 }else{
-                     JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
-                 }
-             }else{
-                 sql = "SELECT * FROM tb_masyarakat WHERE username='" + jTextField1.getText() +"' AND password='" + jPasswordField1.getText() +"'";
-                 rs = stat.executeQuery(sql);
-                 
+            try{
+                String pass;
+                pass = enc.getMD5EncryptedValue(jPasswordField1.getText());
+
+                sql = "SELECT * FROM tb_petugas INNER JOIN tb_level ON tb_petugas.id_level = tb_level.id_level WHERE username='" + jTextField1.getText() +"' AND password='" + pass +"'";
+                rs = stat.executeQuery(sql);
+
                  if(rs.next()){
-                    if(jTextField1.getText().equals(rs.getString("username")) && jPasswordField1.getText().equals(rs.getString("password"))){
+                     if(jTextField1.getText().equals(rs.getString("username"))){
+                        if(rs.getString("level").equalsIgnoreCase("administrator")){
                          list = new ArrayList<UserSession>();
                          a = new UserSession();
-                         a.setId(rs.getInt("id_user"));
+                         a.setId(rs.getInt("id_petugas"));
                          a.setUsername(rs.getString("username"));
                          a.setPassword(rs.getString("password"));
-                         a.setName(rs.getString("nama_lengkap"));
+                         a.setName(rs.getString("nama_petugas"));
+                         a.setLevel(rs.getString("level"));
                          list.add(a);
-                         
-                         new User().show();
+
+                         new Admin().show();
+                         this.dispose();
+                     }else{
+                         list = new ArrayList<UserSession>();
+                         a = new UserSession();
+                         a.setId(rs.getInt("id_petugas"));
+                         a.setUsername(rs.getString("username"));
+                         a.setPassword(rs.getString("password"));
+                         a.setName(rs.getString("nama_petugas"));
+                         a.setLevel(rs.getString("level"));
+                         list.add(a);
+
+                         new Petugas().show();
                          this.dispose(); 
-                        }else{
-                     JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
-                    }
+                     }
+                     }else{
+                         JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
+                     }
                  }else{
-                     JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
+                     sql = "SELECT * FROM tb_masyarakat WHERE username='" + jTextField1.getText() +"' AND password='" + pass +"'";
+                     rs = stat.executeQuery(sql);
+
+                     if(rs.next()){
+                        if(jTextField1.getText().equals(rs.getString("username"))){
+                             list = new ArrayList<UserSession>();
+                             a = new UserSession();
+                             a.setId(rs.getInt("id_user"));
+                             a.setUsername(rs.getString("username"));
+                             a.setPassword(rs.getString("password"));
+                             a.setName(rs.getString("nama_lengkap"));
+                             list.add(a);
+
+                             new User().show();
+                             this.dispose(); 
+                            }else{
+                                JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
+                        }
+                     }else{
+                         JOptionPane.showMessageDialog(null,"Gagal\nUsername atau Password salah","Informasi",JOptionPane.ERROR_MESSAGE);
+                     }
                  }
-             }
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
         } 
     }//GEN-LAST:event_jButton1ActionPerformed
 
