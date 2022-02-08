@@ -2,6 +2,7 @@
 # Sistem Lelang
 
 Aplikasi Sistem Lelang berbasis desktop, dibuat dengan Bahasa Pemrograman Java dan Netbeans sebagai IDE.
+
 Ditujukan untuk memenuhi Uji Kompetensi Keahlian Rekayasa Perangkat Lunak (RPL) Tahun 2022.
 
 # Persyaratan
@@ -11,6 +12,7 @@ Ditujukan untuk memenuhi Uji Kompetensi Keahlian Rekayasa Perangkat Lunak (RPL) 
 
 # Plugin
 JCalendar, untuk tutorial meng-installnya ada [disini](https://www.intika34.com/2017/04/cara-menambahkan-jcalendar-pada-netbeans.html)
+
 Jasper Report, untuk tutorial meng-installnya ada [disini](https://gilacoding.com/read/cara-membuat-dan-contoh-sederhana-laporan-dengan-ireport-java-netbeans)
 
 
