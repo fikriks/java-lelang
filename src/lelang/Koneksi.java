@@ -16,7 +16,7 @@ public class Koneksi {
     public Connection con;
     public Statement stat;
     
-    private static final String DATABASE_NAME = "lelang";
+    private static final String DATABASE_NAME = "DB";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
    
@@ -25,7 +25,6 @@ public class Koneksi {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/"+DATABASE_NAME,USERNAME,PASSWORD);
             stat = con.createStatement();
-            System.out.println("Sukses");
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, e.getMessage());
             System.exit(0);

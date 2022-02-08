@@ -5,10 +5,17 @@
  */
 package lelang.menu;
 
+import java.sql.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 import lelang.Login;
 import lelang.UserSession;
 import lelang.master.*;
+import lelang.*;
+import java.io.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.*;
+import net.sf.jasperreports.view.*;
 
 /**
  *
@@ -16,6 +23,10 @@ import lelang.master.*;
  */
 public class Petugas extends javax.swing.JFrame {
     private List<UserSession> list;
+    private Connection con;
+    private Koneksi kon = new Koneksi();
+    private JasperReport jasper;
+    private JasperPrint print;
     
     /**
      * Creates new form Petugas
@@ -23,6 +34,8 @@ public class Petugas extends javax.swing.JFrame {
     public Petugas() {
         initComponents();
         setLocationRelativeTo(this);
+        
+        con = kon.con;
         this.setTitle("Menu Utama");
     }
 
@@ -40,8 +53,10 @@ public class Petugas extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Menu Utama");
 
@@ -68,10 +83,17 @@ public class Petugas extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Laporan");
+        jButton4.setText("Laporan Data Lelang");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Laporan Data Barang");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
             }
         });
 
@@ -86,13 +108,16 @@ public class Petugas extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(142, 142, 142)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(157, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(jButton4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton5)))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,7 +129,9 @@ public class Petugas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(37, Short.MAX_VALUE))
@@ -127,6 +154,16 @@ public class Petugas extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        try {
+            File file = new File("src/lelang/report/LaporanLelang.jasper");
+            HashMap hm = new HashMap();
+            jasper = (JasperReport) JRLoader.loadObject(file);
+            print = JasperFillManager.fillReport(jasper, hm, con);
+            JasperViewer.viewReport(print,false);
+            JasperViewer.setDefaultLookAndFeelDecorated(true);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -137,6 +174,20 @@ public class Petugas extends javax.swing.JFrame {
         new Login().show();
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        try {
+            File file = new File("src/lelang/report/LaporanDataBarang.jasper");
+            HashMap hm = new HashMap();
+            jasper = (JasperReport) JRLoader.loadObject(file);
+            print = JasperFillManager.fillReport(jasper, hm, con);
+            JasperViewer.viewReport(print,false);
+            JasperViewer.setDefaultLookAndFeelDecorated(true);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -149,7 +200,7 @@ public class Petugas extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -178,6 +229,7 @@ public class Petugas extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

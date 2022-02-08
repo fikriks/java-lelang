@@ -6,6 +6,8 @@
 package lelang.master;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.*;
 import javax.swing.table.*;
 import lelang.*;
@@ -23,6 +25,9 @@ public class DataLelang extends javax.swing.JFrame {
     private Koneksi kon = new Koneksi();
     private DefaultTableModel model;
     private UserSession session = new UserSession();
+    private SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat fm1 = new SimpleDateFormat("dd-MM-yyyy");
+    private Calendar cal = Calendar.getInstance();
     
     /**
      * Creates new form DataLelang
@@ -37,13 +42,38 @@ public class DataLelang extends javax.swing.JFrame {
         aturTable();
         dataCB();
         dataCB1();
+        sembunyiCRUD();
         
         jTextField1.setEditable(false);
         jComboBox1.requestFocus();
+        jDateChooser1.setDate(cal.getTime());
+    }
+    
+    private void sembunyi()
+    {
+        jComboBox1.setEnabled(false);
+        jComboBox2.setEnabled(false);
+    }
+    
+    private void sembunyiCRUD(){
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(false);
+    }
+    
+    private void tampil()
+    {
+        jComboBox1.setEnabled(true);
+        jComboBox2.setEnabled(true);
+    }
+    
+    private void tampilCRUD(){
+        jButton1.setEnabled(false);
+        jButton2.setEnabled(true);
     }
     
     private void dataCB(){
         jComboBox1.removeAllItems();
+        jComboBox1.addItem("-- Pilih --");
         
         try{
            sql = "SELECT * FROM tb_barang LEFT JOIN tb_lelang ON tb_barang.id_barang = tb_lelang.id_barang";
@@ -64,8 +94,18 @@ public class DataLelang extends javax.swing.JFrame {
         }
     }
     
+    private void reset(){
+        model.fireTableDataChanged();
+        model.getDataVector().removeAllElements();
+        aturTable();
+        sembunyiCRUD();
+        dataCB();
+        dataCB1();
+        jDateChooser1.setDate(cal.getTime());
+    }
+    
     private void aturTable(){
-        String[] judul = {"ID Lelang", "Nama Barang", "Tgl Lelang", "Harga Akhir", "Penawar", "Petugas", "Status"};
+        String[] judul = {"ID Lelang", "Nama Barang", "Tgl Lelang", "Harga Awal", "Harga Akhir", "Penawar", "Petugas", "Status"};
         model = new DefaultTableModel(null, judul){
             @Override
             public boolean isCellEditable(int row,int column){
@@ -78,7 +118,7 @@ public class DataLelang extends javax.swing.JFrame {
             sql = "SELECT * FROM tb_lelang INNER JOIN tb_barang ON tb_lelang.id_barang = tb_barang.id_barang LEFT JOIN tb_masyarakat ON tb_lelang.id_user = tb_masyarakat.id_user INNER JOIN tb_petugas ON tb_lelang.id_petugas = tb_petugas.id_petugas";
             rs = stat.executeQuery(sql);
             while(rs.next()){
-                Object[] isi = {rs.getString("id_lelang"),rs.getString("nama_barang"),rs.getString("tgl_lelang"),rs.getString("harga_akhir"), rs.getString("nama_lengkap") == null ? "Belum Ada" : rs.getString("nama_lengkap"), rs.getString("nama_petugas"), rs.getString("status")};
+                Object[] isi = {rs.getString("id_lelang"),rs.getString("nama_barang"),String.valueOf(fm1.format(rs.getDate("tgl_lelang"))),rs.getString("harga_awal"), rs.getString("harga_akhir") == null ? "Belum Ada" : rs.getString("harga_akhir"), rs.getString("nama_lengkap") == null ? "Belum Ada" : rs.getString("nama_lengkap"), rs.getString("nama_petugas"), rs.getString("status").substring(0,1).toUpperCase() + rs.getString("status").substring(1)};
                 model.addRow(isi);
             }
             
@@ -94,6 +134,7 @@ public class DataLelang extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(4).setCellRenderer(render);
             jTable1.getColumnModel().getColumn(5).setCellRenderer(render);
             jTable1.getColumnModel().getColumn(6).setCellRenderer(render);
+            jTable1.getColumnModel().getColumn(7).setCellRenderer(render);
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,"gagal"+e.getMessage());
         }
@@ -120,8 +161,11 @@ public class DataLelang extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Data Lelang");
 
@@ -174,36 +218,48 @@ public class DataLelang extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setText("Tanggal Lelang");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(274, 274, 274))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addGap(55, 55, 55)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2))
-                    .addComponent(jComboBox1, 0, 176, Short.MAX_VALUE)
-                    .addComponent(jTextField1)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(jButton3)
+                                .addGap(232, 232, 232)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(195, 195, 195)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(123, 123, 123)
+                                        .addComponent(jButton1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton2))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(55, 55, 55)
+                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel4)
+                                            .addComponent(jLabel5))
+                                        .addGap(48, 48, 48)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jTextField1)
+                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,7 +268,7 @@ public class DataLelang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jButton3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -220,11 +276,15 @@ public class DataLelang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(13, 13, 13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -238,7 +298,7 @@ public class DataLelang extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if(jComboBox2.getSelectedIndex() == 0){
+        if(jComboBox1.getSelectedIndex() == 0 || jComboBox2.getSelectedIndex() == 0){
             JOptionPane.showMessageDialog(null, "Ada data yang belum di isi","Informasi",JOptionPane.INFORMATION_MESSAGE);
         }else{
             try{
@@ -250,14 +310,11 @@ public class DataLelang extends javax.swing.JFrame {
                     status = "ditutup";
                 }
 
-                sql = "INSERT INTO tb_lelang VALUES ("+ null +",(SELECT id_barang FROM tb_barang WHERE nama_barang='"+ jComboBox1.getSelectedItem() +"'), CURDATE(), (SELECT harga_awal FROM tb_barang WHERE nama_barang='"+ jComboBox1.getSelectedItem() +"'), "+ null +", '"+ session.getId() +"', '"+ status +"')";
+                sql = "INSERT INTO tb_lelang VALUES ("+ null +",(SELECT id_barang FROM tb_barang WHERE nama_barang='"+ jComboBox1.getSelectedItem() +"'), '"+ String.valueOf(fm.format(jDateChooser1.getDate())) +"', "+ null +", "+ null +", '"+ session.getId() +"', '"+ status +"')";
                 stat.execute(sql);
                 JOptionPane.showMessageDialog(null, "Sukses tambah data");
                 
-                model.fireTableDataChanged();
-                model.getDataVector().removeAllElements();
-
-                aturTable();
+                reset();
             }catch (Exception e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
@@ -272,7 +329,10 @@ public class DataLelang extends javax.swing.JFrame {
             if(rs.next()){
                 jTextField1.setText(rs.getString("id_lelang"));
                 jComboBox1.setSelectedItem(rs.getString("nama_barang"));
-                jComboBox2.setSelectedIndex(rs.getString("status") == "dibuka" ? 0 : 1);
+                jComboBox2.setSelectedIndex(rs.getString("status").equals("dibuka") ? 1 : 2);
+                jDateChooser1.setDate(rs.getDate("tgl_lelang"));
+                
+                tampilCRUD();
             }
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,e.getMessage());
@@ -281,6 +341,27 @@ public class DataLelang extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+         if(jComboBox1.getSelectedIndex() == 0 || jComboBox2.getSelectedIndex() == 0){
+            JOptionPane.showMessageDialog(null, "Ada data yang belum di isi","Informasi",JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            try{
+                String status;
+
+                if(jComboBox2.getSelectedIndex() == 1){
+                    status = "dibuka";
+                }else{
+                    status = "ditutup";
+                }
+
+                sql = "UPDATE tb_lelang SET id_barang=(SELECT id_barang FROM tb_barang WHERE nama_barang='"+ jComboBox1.getSelectedItem() +"'), tgl_lelang='"+ String.valueOf(fm.format(jDateChooser1.getDate())) +"', status='"+ status +"' WHERE id_lelang='"+ jTextField1.getText() +"'";
+                stat.execute(sql);
+                JOptionPane.showMessageDialog(null, "Sukses edit data");
+
+                reset();
+            }catch (Exception e){
+                JOptionPane.showMessageDialog(null,e.getMessage());
+            }
+         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -300,7 +381,7 @@ public class DataLelang extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -330,10 +411,12 @@ public class DataLelang extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
