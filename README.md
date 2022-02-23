@@ -2,7 +2,6 @@
 
 Ditujukan untuk memenuhi Uji Kompetensi Keahlian Rekayasa Perangkat Lunak (RPL) Tahun 2022.
 
-> Aplikasi ini masih dalam tahap pengembangan.
 > Projek ini merupakan _project open source_, Anda dapat download/fork/clone pada projek ini.
 > Aplikasi Sistem Lelang berbasis desktop, dibuat dengan Bahasa Pemrograman Java dan Netbeans sebagai IDE.
 
