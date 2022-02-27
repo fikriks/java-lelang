@@ -240,6 +240,14 @@ public class DataLelang extends javax.swing.JFrame {
                                 .addGap(195, 195, 195)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel4))
+                                        .addGap(56, 56, 56)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jComboBox1, 0, 176, Short.MAX_VALUE)
+                                            .addComponent(jTextField1)))
+                                    .addGroup(layout.createSequentialGroup()
                                         .addGap(123, 123, 123)
                                         .addComponent(jButton1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -249,16 +257,10 @@ public class DataLelang extends javax.swing.JFrame {
                                         .addGap(55, 55, 55)
                                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel4)
-                                            .addComponent(jLabel5))
+                                        .addComponent(jLabel5)
                                         .addGap(48, 48, 48)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jTextField1)
-                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 52, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -276,7 +278,7 @@ public class DataLelang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -288,7 +290,7 @@ public class DataLelang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -328,7 +330,7 @@ public class DataLelang extends javax.swing.JFrame {
             rs = stat.executeQuery(sql);
             if(rs.next()){
                 jTextField1.setText(rs.getString("id_lelang"));
-                jComboBox1.setSelectedItem(rs.getString("nama_barang"));
+                jComboBox1.getModel().setSelectedItem(rs.getString("nama_barang"));
                 jComboBox2.setSelectedIndex(rs.getString("status").equals("dibuka") ? 1 : 2);
                 jDateChooser1.setDate(rs.getDate("tgl_lelang"));
                 
@@ -352,7 +354,7 @@ public class DataLelang extends javax.swing.JFrame {
                 }else{
                     status = "ditutup";
                 }
-
+                
                 sql = "UPDATE tb_lelang SET id_barang=(SELECT id_barang FROM tb_barang WHERE nama_barang='"+ jComboBox1.getSelectedItem() +"'), tgl_lelang='"+ String.valueOf(fm.format(jDateChooser1.getDate())) +"', status='"+ status +"' WHERE id_lelang='"+ jTextField1.getText() +"'";
                 stat.execute(sql);
                 JOptionPane.showMessageDialog(null, "Sukses edit data");
